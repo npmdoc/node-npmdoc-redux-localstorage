@@ -1,0 +1,149 @@
+<div class="apidocDiv">
+<style>
+/*csslint
+*/
+.apidocDiv {
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.apidocDiv a[href] {
+    color: #33f;
+    font-weight: bold;
+    text-decoration: none;
+}
+.apidocDiv a[href]:hover {
+    text-decoration: underline;
+}
+.apidocCodeCommentSpan {
+    background: #bbf;
+    color: #000;
+    display: block;
+}
+.apidocCodeKeywordSpan {
+    color: #d00;
+    font-weight: bold;
+}
+.apidocCodePre {
+    background: #eef;
+    border: 1px solid;
+    color: #777;
+    padding: 5px;
+    white-space: pre-wrap;
+}
+.apidocFooterDiv {
+    margin-top: 20px;
+    text-align: center;
+}
+.apidocModuleLi {
+    margin-top: 10px;
+}
+.apidocSectionDiv {
+    border-top: 1px solid;
+    margin-top: 20px;
+}
+.apidocSignatureSpan {
+    color: #777;
+    font-weight: bold;
+}
+</style>
+<h1>api documentation for
+    <a
+
+        href="https://github.com/elgerlambert/redux-localstorage#readme"
+
+    >redux-localstorage (v0.4.1)</a>
+</h1>
+<h4>Store enhancer that syncs (a subset of) your redux store state to localstorage.</h4>
+<div class="apidocSectionDiv"><a
+    href="#apidoc.tableOfContents"
+    id="apidoc.tableOfContents"
+><h1>table of contents</h1></a><ol>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.redux-localstorage">module redux-localstorage</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.redux-localstorage.redux-localstorage">
+            function <span class="apidocSignatureSpan"></span>redux-localstorage
+            <span class="apidocSignatureSpan">(paths, config)</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+</ol></div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.redux-localstorage" id="apidoc.module.redux-localstorage">module redux-localstorage</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.redux-localstorage.redux-localstorage" id="apidoc.element.redux-localstorage.redux-localstorage">
+        function <span class="apidocSignatureSpan"></span>redux-localstorage
+        <span class="apidocSignatureSpan">(paths, config)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function persistState(paths, config) {
+  var cfg = _extends({
+    key: &#x27;redux&#x27;,
+    merge: _utilMergeStateJs2[&#x27;default&#x27;],
+    slicer: _createSlicerJs2[&#x27;default&#x27;],
+    serialize: JSON.stringify,
+    deserialize: JSON.parse
+  }, config);
+
+  var key = cfg.key;
+  var merge = cfg.merge;
+  var slicer = cfg.slicer;
+  var serialize = cfg.serialize;
+  var deserialize = cfg.deserialize;
+
+  return function (next) {
+    return function (reducer, initialState, enhancer) {
+      if (typeof initialState === &#x27;function&#x27; &#x26;&#x26; typeof enhancer === &#x27;undefined&#x27;) {
+        enhancer = initialState;
+        initialState = undefined;
+      }
+
+      var persistedState = undefined;
+      var finalInitialState = undefined;
+
+      try {
+        persistedState = deserialize(localStorage.getItem(key));
+        finalInitialState = merge(initialState, persistedState);
+      } catch (e) {
+        console.warn(&#x27;Failed to retrieve initialize state from localStorage:&#x27;, e);
+      }
+
+      var store = next(reducer, finalInitialState, enhancer);
+      var slicerFn = slicer(paths);
+
+      store.subscribe(function () {
+        var state = store.getState();
+        var subset = slicerFn(state);
+
+        try {
+          localStorage.setItem(key, serialize(subset));
+        } catch (e) {
+          console.warn(&#x27;Unable to persist state to localStorage:&#x27;, e);
+        }
+      });
+
+      return store;
+    };
+  };
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocFooterDiv">
+    [ this document was created with
+    <a href="https://github.com/kaizhu256/node-utility2" target="_blank">utility2</a>
+    ]
+</div>
+</div>
